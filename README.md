@@ -31,3 +31,5 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 - You can update the entire colour scheme of the application at https://ui.shadcn.com/themes and then pasting the code into globals.css
 - You can run `npx shadcn-ui@latest add` to select multiple (or all) components to install
+- `error.tsx` pages need to be client components
+- When you use `asChild` in the button component (shadcn), it means that the child will be the element rather than there being a button html element
