@@ -28,8 +28,10 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
 import { formSchema, formSchemaType } from "@/schemas/form";
 import { createForm } from "@/actions/form";
+import { useRouter } from "next/navigation";
 
 export default function CreateFormBtn() {
+  const router = useRouter();
   const form = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
   });
@@ -41,7 +43,7 @@ export default function CreateFormBtn() {
         title: "Success",
         description: "Form created successfully",
       });
-      console.log(formId);
+      router.push(`/builder/${formId}`);
     } catch (error) {
       toast({
         title: "Error",
@@ -54,7 +56,15 @@ export default function CreateFormBtn() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Create new form</Button>
+        <Button
+          variant="outline"
+          className="group flex h-[190px] flex-col items-center justify-center gap-4 whitespace-normal border border-dashed border-primary/20 hover:cursor-pointer hover:border-primary"
+        >
+          <BsFileEarmarkPlus className="h-8 w-8 text-muted-foreground group-hover:text-primary" />
+          <span className="text-xl font-bold text-muted-foreground group-hover:text-primary">
+            Create new form
+          </span>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
