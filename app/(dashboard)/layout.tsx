@@ -14,7 +14,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
       </nav>
       <main className="flex w-full flex-grow">{children}</main>
-      {children}
     </div>
   );
 }
