@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import DesignerSidebar from "./DesignerSidebar";
-import { DragEndEvent, useDndMonitor, useDroppable } from "@dnd-kit/core";
+import {
+  DragEndEvent,
+  useDndMonitor,
+  useDraggable,
+  useDroppable,
+} from "@dnd-kit/core";
 import useDesigner from "./hooks/useDesigner";
 import {
   ElementsType,
@@ -59,7 +64,7 @@ export default function Designer() {
               Drop here
             </p>
           )}
-          {droppable.isOver && (
+          {droppable.isOver && elements.length === 0 && (
             <div className="w-full p-4">
               <div className="h-[120px] rounded-md bg-primary/20"></div>
             </div>
@@ -102,10 +107,23 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     },
   });
 
+  const draggable = useDraggable({
+    id: element.id + "-drag-handler",
+    data: {
+      type: element.type,
+      elementId: element.id,
+      isDesignerElement: true,
+    },
+  });
+  if (draggable.isDragging) return null;
+
   const DesignerElement = FormElements[element.type].designerComponent;
 
   return (
     <div
+      ref={draggable.setNodeRef}
+      {...draggable.listeners}
+      {...draggable.attributes}
       className="relative flex h-[120px] flex-col rounded-md text-foreground ring-1 ring-inset ring-accent hover:cursor-pointer"
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
@@ -136,9 +154,20 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
           </div>
         </>
       )}
-      <div className="pointer-events-none flex h-[120px] w-full items-center rounded-md bg-accent/40 px-4 py-2">
+      {topHalf.isOver && (
+        <div className="absolute top-0 h-[7px] w-full rounded-md rounded-b-none bg-primary"></div>
+      )}
+      <div
+        className={cn(
+          "pointer-events-none flex h-[120px] w-full items-center rounded-md bg-accent/40 px-4 py-2 opacity-100",
+          mouseIsOver && "opacity-30",
+        )}
+      >
         <DesignerElement elementInstance={element} />
       </div>
+      {bottomHalf.isOver && (
+        <div className="absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none bg-primary"></div>
+      )}
     </div>
   );
 }
